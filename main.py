@@ -6,18 +6,18 @@ import sys
 
 
 class FAQAssistant:
-    def __init__(self, file_path="data/faqs.json"):
-        self.faqs = self.faqs.load_faqs(file_path)
+    def __init__(self, file_path):
+        self.faqs = self.load_faqs(file_path)
 
     def load_faqs(self, file_path):
         """Load FAQs from a JSON file."""
         try:
             with open(file_path, "r") as f:
-                faq_data = json.load(f)
+                return json.load(f)
         except FileNotFoundError:
             print(f"Error: The file '{file_path}' was not found.")
             return[]
-    
+        
     def find_best_match(self, question):
         """Find the best matching question in the FAQ data."""
         best_match = None
@@ -29,6 +29,17 @@ class FAQAssistant:
                 highest_score = score
                 best_match = faq
         return best_match, highest_score
+    
+    def get_answer(self, question):
+        best_match, highest_score = self.find_best_match(question)
+
+        if best_match and highest_score > 70:
+            return best_match["answer"]
+        elif highest_score > 0:
+            return " I found a match but I am not enough confident to provide an answer, try formulate the question differently."
+        else:
+            return "Sorry, I couldn't find an answer to your question. Please try again."
+
     
 """
         

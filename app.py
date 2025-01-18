@@ -1,10 +1,41 @@
+from flask import Flask, request, render_template, jsonify
+from main import FAQAssistant
+
+app = Flask(__name__)
+
+# Initialize the FAQAssistant with the data file
+faq_assistant = FAQAssistant(file_path="data/faqs.json")
+
+@app.route("/")
+def home():
+    return render_template("index.html")
+
+@app.route("/get-answer", methods=["POST"])
+def get_answer():
+    data = request.get_json()
+    question = data.get("question", "")
+    answer = faq_assistant.get_answer(question) if question else "No question provided."
+    return jsonify({"answer": answer})
+
+if __name__ == "__main__":
+    app.run(debug=True)
+
+
+
+
+
+
+
+
+"""
+
 from flask import Flask, request, render_template
 from main import FAQAssistant
 
 app=Flask(__name__)
-faq_assistant = FAQAssistant() #load FAQs when app starts
+faq_assistant = FAQAssistant(file_path="data/faqs.json") #load FAQs when app starts
 
-@app.route('/', method = ["GET", "POST"])
+@app.route('/', methods = ["GET", "POST"])
 def home():
     if request.method == "POST":
         user_question = request.form.get("question", "").strip()
@@ -25,3 +56,4 @@ if __name__ == "__main__":
     app.run(debug=True)
 
 
+"""
