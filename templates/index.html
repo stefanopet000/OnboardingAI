@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>OnboardingAI</title>
+    <script>
+        async function fetchAnswer() {
+            const query = document.getElementById("userInput").value;
+
+            const response = await fetch("/get-answer", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ question: query })
+            });
+
+            const data = await response.json();
+
+            // Display the answer
+            document.getElementById("response").innerText = data.answer || "No answer available.";
+        }
+    </script>
+</head>
+
+<body>
+    <h1>Welcome to OnboardingAI</h1>
+    <p>Type your question below:</p>
+    <input type="text" id="userInput" placeholder="Enter your question" />
+    <button onclick="fetchAnswer()">Submit</button>
+    <h2>Answer:</h2>
+    <p id="response"></p>
+</body>
+
+</html>
