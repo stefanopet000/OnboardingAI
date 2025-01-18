@@ -21,6 +21,7 @@ def home():
             return render_template("index.html", answer="Please enter a question")
         
     return render_template("index.html")
-__name__ == "__main__":
-app.run(debug=True)
+if __name__ == "__main__":
+    app.run(debug=True)
+
 
