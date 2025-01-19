@@ -8,6 +8,9 @@ faq_assistant = FAQAssistant(file_path="data/faqs.json")
 
 @app.route("/")
 def home():
+    answer= None
+    if request.method == "POST":
+        question = request.form.get("question")
     return render_template("index.html")
 
 @app.route("/get-answer", methods=["POST"])
