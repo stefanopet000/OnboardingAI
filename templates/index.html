@@ -1,35 +1,120 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-    <title>OnboardingAI</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQ Assistant</title>
+    <style>
+        /* General Reset */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+
+        /* Center the content */
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #ffffff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        /* Heading */
+        h1 {
+            color: #007BFF;
+            font-size: 2.5em;
+        }
+
+        p {
+            font-size: 1.2em;
+            margin: 10px 0;
+        }
+
+        /* Form and Input */
+        form {
+            margin: 20px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            box-sizing: border-box;
+            /* Include padding in width */
+        }
+
+        button {
+            background-color: #007BFF;
+            color: #ffffff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .clear-button {
+            background-color: #dc3545;
+            margin-left: 10px;
+        }
+
+        .clear-button:hover {
+            background-color: #a71d2a;
+        }
+
+        /* Answer Section */
+        .answer {
+            margin-top: 30px;
+            padding: 20px;
+            background: #e7f3fe;
+            border: 1px solid #b3d8ff;
+            border-radius: 5px;
+        }
+    </style>
     <script>
-        async function fetchAnswer() {
-            const query = document.getElementById("userInput").value;
-
-            const response = await fetch("/get-answer", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({ question: query })
-            });
-
-            const data = await response.json();
-
-            // Display the answer
-            document.getElementById("response").innerText = data.answer || "No answer available.";
+        function clearAnswer() {
+            document.querySelector('input[name="question"]').value = "";
+            const answerDiv = document.querySelector('.answer');
+            if (answerDiv) {
+                answerDiv.style.display = "none";
+            }
         }
     </script>
 </head>
 
 <body>
-    <h1>Welcome to OnboardingAI</h1>
-    <p>Type your question below:</p>
-    <input type="text" id="userInput" placeholder="Enter your question" />
-    <button onclick="fetchAnswer()">Submit</button>
-    <h2>Answer:</h2>
-    <p id="response"></p>
+    <div class="container">
+        <h1>FAQ Assistant</h1>
+        <p>Ask a question about your application, and I'll find the best answer!</p>
+        <form method="POST">
+            <input type="text" name="question" placeholder="Type your question here..." required>
+            <button type="submit">Get Answer</button>
+            <button type="button" class="clear-button" onclick="clearAnswer()">Clear Answer</button>
+        </form>
+        {% if answer %}
+        <div class="answer">
+            <h3>Answer:</h3>
+            <p>{{ answer }}</p>
+        </div>
+        {% endif %}
+    </div>
 </body>
 
 </html>

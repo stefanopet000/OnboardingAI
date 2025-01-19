@@ -1,17 +1,25 @@
 from transformers import pipeline
 from fuzzywuzzy import fuzz
+from parseScenario import parse_ruby_file
 import json
 import os
 import sys
 
 
+
 class FAQAssistant:
-    def __init__(self, scenario_file):
+    def __init__(self, ruby_file, json_file):
+        if not os.path.exists(ruby_file):
+            print(f"Error: I could not find any scenarios. Please first create a ruby file with the scenarios")
+            sys.exit(1)
+        if not os.path.exists(json_file):
+            print:(f"Error: The file '{json_file}' was not found. Parsing {ruby_file} now...")
+            parse_ruby_file(ruby_file, json_file)
         try:
-            with open(scenario_file, "r") as file:
+            with open(json_file, "r") as file:
                 self.scenario = json.load(file)
-        except FileNotFoundError:
-            print(f"Error: The file '{scenario_file}' was not found.")
+        except json.JSONDecodeError:
+            print(f"Error: The file '{json_file}' is not a valid JSON file.")
             sys.exit(1)
 
     def find_best_match(self, question):

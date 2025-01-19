@@ -4,14 +4,18 @@ from main import FAQAssistant
 app = Flask(__name__)
 
 # Initialize the FAQAssistant with the data file
-faq_assistant = FAQAssistant(file_path="data/faqs.json")
+faq_assistant = FAQAssistant(
+    ruby_file="data/scenarios.rb",
+    json_file="data/scenarios.json"
+)
 
-@app.route("/")
+@app.route(("/"), methods=["GET", "POST"])
 def home():
     answer= None
     if request.method == "POST":
         question = request.form.get("question")
-    return render_template("index.html")
+        answer = faq_assistant.get_answer(question)
+    return render_template("index.html", answer=answer)
 
 @app.route("/get-answer", methods=["POST"])
 def get_answer():
@@ -21,7 +25,7 @@ def get_answer():
     return jsonify({"answer": answer})
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    app.run(host="0.0.0.0", port=5001)
 
 
 
