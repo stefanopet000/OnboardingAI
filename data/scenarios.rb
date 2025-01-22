@@ -1,4 +1,4 @@
-Scenario: The user logs in using an email address
+Scenario: [Authentication] The user logs in using an email address
 Given I am a registered user
 When I enter my email address and press enter
 Then I should be able to log in to the application
