@@ -1,13 +1,14 @@
-AI model about testing knowledge
+# Test Scenarios Bot
 
-To run this project make sure to install all dependencies in requirement.txt. Create virtuar env and run dependencies:
+A Slack bot that helps teams access and query test scenarios stored in a database.
 
-python3 -m venv test_env
-source test_env/bin/activate
-pip install -r requirements.txt
+## Prerequisites
 
-NOTE: torch installation might fail, in that case you can replace torch package in requirements.txt with this:
-pip install --no-cache-dir torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
+- Docker and Docker Compose
+- Slack Bot Token and App Token from your Slack workspace
 
-NOTE2: Freezing requirement will replace pip install --no-cache-dir torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu with the installed torch version.
+## Setup
 
+1. Clone the repository
+
+2. Create a `.env` file in the project root

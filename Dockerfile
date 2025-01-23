@@ -19,9 +19,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy the rest of the application
 COPY . .
 
-# Environment variables (replace these with your actual values when running)
-ENV SLACK_BOT_TOKEN=""
-ENV SLACK_APP_TOKEN=""
+# Enable Python logging
+ENV PYTHONUNBUFFERED=1
 
 # Command to run the application
-CMD ["python", "slack_bot.py"]
+CMD ["python", "-u", "slack_bot.py"]

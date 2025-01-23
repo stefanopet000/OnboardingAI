@@ -1,6 +1,8 @@
 from slack_bolt import App
 from slack_bolt.adapter.socket_mode import SocketModeHandler
-from main import FAQAssistant
+from scenario_manager import ScenarioManager
+from database import DatabaseManager
+from fuzzywuzzy import fuzz
 import os
 import logging
 
@@ -12,19 +14,41 @@ class SlackBot:
     def __init__(self, bot_token, app_token):
         self.app = App(token=bot_token)
         self.app_token = app_token
-        self.faq_assistant = FAQAssistant(
-            ruby_file="data/scenarios.rb",
-            json_file="data/scenarios.json"
-        )
+        self.db_manager = DatabaseManager()  # Will use env variables from docker-compose
         
         @self.app.message("")
         def handle_message(message, say):
-            logger.info(f"Received message: {message}")
-            question = message["text"]
-            logger.info(f"Processing question: {question}")
-            answer = self.faq_assistant.get_answer(question)
-            logger.info(f"Sending answer: {answer}")
-            say(answer)
+            try:
+                with next(self.db_manager.get_session()) as session:
+                    scenario_manager = ScenarioManager(session)
+                    question = message["text"]
+                    scenarios = scenario_manager.get_scenarios()
+                    
+                    # Find best match using fuzzy matching
+                    best_match = None
+                    highest_score = 0
+                    
+                    for scenario in scenarios:
+                        score = fuzz.ratio(question.lower(), scenario.title.lower())
+                        if score > highest_score:
+                            highest_score = score
+                            best_match = scenario
+                    
+                    if best_match and highest_score > 70:
+                        response = (
+                            f"Based on the scenario '{best_match.title}':\n"
+                            f"Given {best_match.given}\n"
+                            f"When {best_match.when}\n"
+                            f"Then {best_match.then}"
+                        )
+                        say(response)
+                    elif highest_score > 0:
+                        say("I found a similar scenario but I'm not confident enough. Could you rephrase your question?")
+                    else:
+                        say("Sorry, I couldn't find a matching scenario.")
+            except Exception as e:
+                logger.error(f"Error handling message: {str(e)}")
+                say("Sorry, I encountered an error.")
             
     def start(self):
         logger.info("Starting Slack bot...")
